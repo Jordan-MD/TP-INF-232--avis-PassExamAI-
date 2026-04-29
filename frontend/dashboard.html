@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Résultats — IA & PassExamAI | UY1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #080810;
+      --surface: #0f0f1a;
+      --surface2: #16162a;
+      --border: #1e1e35;
+      --accent: #7eeea0;
+      --accent2: #5b8cff;
+      --accent3: #f9a825;
+      --text: #e8eaf0;
+      --muted: #5a5a7a;
+      --danger: #ff6b6b;
+      --font-display: 'Syne', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    html, body { min-height: 100%; background: var(--bg); color: var(--text); font-family: var(--font-display); }
+
+    body::before {
+      content:''; position:fixed; inset:0;
+      background-image: linear-gradient(rgba(94,140,255,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(94,140,255,.03) 1px,transparent 1px);
+      background-size: 40px 40px; pointer-events:none; z-index:0;
+    }
+
+    /* ── Header ── */
+    #header {
+      position:relative; z-index:1;
+      padding:32px 40px 24px;
+      border-bottom:1px solid var(--border);
+      display:flex; align-items:flex-end; justify-content:space-between; flex-wrap:wrap; gap:16px;
+    }
+    .header-tag { font-family:var(--font-mono); font-size:11px; color:var(--accent); letter-spacing:.1em; margin-bottom:8px; }
+    #header h1 { font-size:28px; font-weight:800; letter-spacing:-.02em; }
+    #total-badge {
+      background:var(--surface2); border:1px solid var(--border);
+      border-radius:100px; padding:8px 18px;
+      font-family:var(--font-mono); font-size:13px; color:var(--muted);
+    }
+    #total-badge strong { color:var(--accent); font-size:18px; }
+
+    /* ── Content ── */
+    #content { position:relative; z-index:1; padding:32px 40px; }
+
+    /* ── KPIs ── */
+    .kpi-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:16px; margin-bottom:40px; }
+    .kpi-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px 24px; }
+    .kpi-label { font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-bottom:8px; text-transform:uppercase; letter-spacing:.07em; }
+    .kpi-value { font-size:32px; font-weight:800; letter-spacing:-.02em; }
+    .kpi-value.green { color:var(--accent); }
+    .kpi-value.blue  { color:var(--accent2); }
+    .kpi-value.orange{ color:var(--accent3); }
+    .kpi-sub { font-family:var(--font-mono); font-size:11px; color:var(--muted); margin-top:4px; }
+
+    /* ── Section headers ── */
+    .section-title {
+      font-size:18px; font-weight:700; margin-bottom:20px;
+      padding-bottom:12px; border-bottom:1px solid var(--border);
+      display:flex; align-items:center; gap:10px;
+    }
+    .section-title span { font-family:var(--font-mono); font-size:11px; color:var(--accent2); }
+
+    /* ── Charts ── */
+    .charts-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(320px,1fr)); gap:20px; margin-bottom:40px; }
+    .chart-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:20px; }
+    .chart-card h3 { font-size:13px; font-weight:600; color:var(--muted); margin-bottom:16px; font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.06em; }
+    .chart-card canvas { max-height:240px; }
+
+    /* ── Likert bars ── */
+    .likert-bars { display:flex; flex-direction:column; gap:10px; }
+    .likert-row { display:flex; align-items:center; gap:12px; }
+    .likert-row-label { font-family:var(--font-mono); font-size:11px; color:var(--muted); width:160px; flex-shrink:0; }
+    .likert-bar-wrap { flex:1; height:24px; background:var(--surface2); border-radius:4px; overflow:hidden; }
+    .likert-bar-fill { height:100%; border-radius:4px; background:linear-gradient(90deg,var(--accent2),var(--accent)); transition:width .8s ease; }
+    .likert-val { font-family:var(--font-mono); font-size:12px; color:var(--accent); width:32px; text-align:right; flex-shrink:0; }
+
+    /* ── Loading / Error ── */
+    #loading { text-align:center; padding:60px; font-family:var(--font-mono); color:var(--muted); font-size:13px; }
+
+    /* ── Back button ── */
+    #back-btn {
+      display:inline-flex; align-items:center; gap:8px;
+      font-family:var(--font-mono); font-size:12px; color:var(--muted);
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:8px; padding:8px 14px; cursor:pointer;
+      text-decoration:none; transition:border-color .2s, color .2s;
+    }
+    #back-btn:hover { border-color:var(--accent2); color:var(--text); }
+
+    @media (max-width:600px) {
+      #header, #content { padding:20px; }
+      .kpi-value { font-size:24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<div id="header">
+  <div>
+    <div class="header-tag">INF 232 EC2 — COLLECTE & ANALYSE DESCRIPTIVE</div>
+    <h1>Tableau de Bord — IA & PassExamAI</h1>
+  </div>
+  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <div id="total-badge">Échantillon actuel : <strong id="total-count">—</strong></div>
+    <a href="index.html" id="back-btn">← Retour à l'enquête</a>
+  </div>
+</div>
+
+<!-- ── Content ── -->
+<div id="content">
+  <div id="loading">Initialisation des outils d'analyse...</div>
+  <div id="dashboard-inner" style="display:none"></div>
+</div>
+
+<script>
+const API_BASE = window.location.origin === 'null' || window.location.protocol === 'file:' 
+  ? 'http://127.0.0.1:8000' 
+  : '';
+
+Chart.defaults.color = '#5a5a7a';
+Chart.defaults.borderColor = '#1e1e35';
+Chart.defaults.font.family = "'JetBrains Mono', monospace";
+Chart.defaults.font.size = 11;
+
+const COLORS = [
+  '#5b8cff','#7eeea0','#f9a825','#ff6b6b','#c084fc','#38bdf8','#fb923c','#a3e635',
+];
+
+// ── Appel endpoint PUBLIC ──────────────────────────────────────────
+async function fetchDashboard() {
+  try {
+    const res = await fetch(`${API_BASE}/api/stats`);
+    if (!res.ok) throw new Error(`Impossible de contacter le serveur (${res.status})`);
+    const data = await res.json();
+
+    document.getElementById('loading').style.display = 'none';
+
+    if (data.total === 0) {
+      document.getElementById('loading').innerHTML = `
+        <div style="padding:40px; border:1px dashed var(--border); border-radius:12px;">
+          <p>Aucune donnée collectée pour le moment.</p>
+          <p style="font-size:12px; margin-top:10px;">Le backend est actif, mais la base de données est vide.</p>
+        </div>
+      `;
+      document.getElementById('loading').style.display = 'block';
+      return;
+    }
+
+    document.getElementById('total-count').textContent = data.total;
+    document.getElementById('dashboard-inner').style.display = 'block';
+    renderDashboard(data);
+  } catch (err) {
+    document.getElementById('loading').innerHTML = `
+      <div style="color:var(--danger); padding:40px; border:1px solid var(--danger); border-radius:12px; background:rgba(255,107,107,0.05)">
+        <p><strong>Erreur de connexion au Backend</strong></p>
+        <p style="font-size:12px; margin-top:10px;">Assure-toi que le serveur FastAPI est lancé (<code>uvicorn app.main:app --reload</code>)</p>
+        <p style="font-size:10px; margin-top:10px; opacity:0.7;">Détail : ${err.message}</p>
+      </div>
+    `;
+  }
+}
+
+fetchDashboard();
+
+// ── Rendu ──────────────────────────────────────────────────────────
+function renderDashboard(d) {
+  const inner = document.getElementById('dashboard-inner');
+
+  inner.innerHTML = `
+    <!-- KPIs Hypothèses -->
+    <div class="section-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent2)"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg> Analyse Inférentielle <span>CORRÉLATIONS & HYPOTHÈSES</span></div>
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">H1 — Coefficient de Corrélation (Pearson)</div>
+        <div class="kpi-value ${Math.abs(d.h1_correlation_usage_perception) > 0.3 ? 'green' : 'orange'}">${d.h1_correlation_usage_perception}</div>
+        <div class="kpi-sub">P-value : ${d.h1_p_value ?? 'N/A'}</div>
+        <div class="kpi-sub" style="font-family:var(--font-mono); font-size:9px; color:var(--accent2); margin-top:4px;">
+          Éq. Régression : Y = ${d.h1_regression.slope}x + ${d.h1_regression.intercept}<br>
+          R² (Coefficient de détermination) : ${d.h1_regression.r_squared}
+        </div>
+        <div class="kpi-sub" style="font-size:10px; margin-top:8px; line-height:1.4;">
+          ${d.h1_p_value < 0.05 
+            ? "✓ Corrélation statistiquement significative. L'usage de l'IA impacte positivement la perception." 
+            : "✗ Absence de corrélation significative démontrée à ce stade de l'échantillonnage."}
+        </div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">H2 — Déficit Méthodologique</div>
+        <div class="kpi-value ${d.h2_pct_sans_methode > 40 ? 'green' : 'orange'}">${d.h2_pct_sans_methode}%</div>
+        <div class="kpi-sub">Étudiants sans méthode structurée</div>
+        <div class="kpi-sub" style="font-size:10px; margin-top:8px;">Cible prioritaire pour PassExamAI</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">H3 — Taux d'Adoption Potentiel</div>
+        <div class="kpi-value ${d.h3_pct_adoption > 60 ? 'green' : 'orange'}">${d.h3_pct_adoption}%</div>
+        <div class="kpi-sub">Réponses "Oui" ou "Probablement"</div>
+        <div class="kpi-sub" style="font-size:10px; margin-top:8px;">${d.h3_pct_adoption > 60 ? '✓ Validation du besoin marché' : '✗ Besoin modéré ou non validé'}</div>
+      </div>
+    </div>
+
+    <!-- Descriptive Stats Table -->
+    <div class="section-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent2)"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg> Résumé Descriptif <span>INDICATEURS DE TENDANCE CENTRALE</span></div>
+    <div class="chart-card" style="margin-bottom:40px; overflow-x:auto;">
+      <table style="width:100%; border-collapse:collapse; font-family:var(--font-mono); font-size:12px; text-align:left;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border); color:var(--muted);">
+            <th style="padding:12px;">VARIABLE</th>
+            <th style="padding:12px;">MESURE</th>
+            <th style="padding:12px;">VALEUR</th>
+            <th style="padding:12px;">INTERPRÉTATION</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px; color:var(--accent2);">Niveau d'études</td>
+            <td style="padding:12px;">Mode</td>
+            <td style="padding:12px;">${d.dist_niveau_etudes.labels[0] || 'N/A'}</td>
+            <td style="padding:12px; opacity:0.8;">Segment majoritaire de la collecte</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px; color:var(--accent2);">Confiance IA</td>
+            <td style="padding:12px;">Moyenne (1-5)</td>
+            <td style="padding:12px;">${d.likert_means['Confiance IA'] || '0'} / 5</td>
+            <td style="padding:12px; opacity:0.8;">Degré d'acceptabilité technologique</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border);">
+            <td style="padding:12px; color:var(--accent2);">Intention d'usage</td>
+            <td style="padding:12px;">Fréquence Mode</td>
+            <td style="padding:12px;">${d.dist_utiliserait_app.labels[0] || 'N/A'}</td>
+            <td style="padding:12px; opacity:0.8;">Validation du concept PassExamAI</td>
+          </tr>
+          <tr>
+            <td style="padding:12px; color:var(--accent2);">Budget acceptable</td>
+            <td style="padding:12px;">Médiane est.</td>
+            <td style="padding:12px;">${d.dist_budget_mensuel.labels[0] || 'N/A'}</td>
+            <td style="padding:12px; opacity:0.8;">Valeur marchande perçue</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Likert -->
+    <div class="section-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent2)"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg> Analyse des Échelles <span>MOYENNES DE LIKERT (n=${d.total})</span></div>
+    <div class="chart-card" style="margin-bottom:40px">
+      <h3>Score moyen par dimension (Échelle de 1 à 5)</h3>
+      <div class="likert-bars" id="likert-bars"></div>
+    </div>
+
+    <!-- Profil -->
+    <div class="section-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent2)"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> Distribution Démographique <span>SEGMENTATION</span></div>
+    <div class="charts-grid">
+      <div class="chart-card"><h3>Niveau d'études</h3><canvas id="chart-niveaux"></canvas></div>
+      <div class="chart-card"><h3>Faculté</h3><canvas id="chart-faculte"></canvas></div>
+      <div class="chart-card"><h3>Genre</h3><canvas id="chart-genre"></canvas></div>
+      <div class="chart-card"><h3>Usage actuel de l'IA</h3><canvas id="chart-utilise"></canvas></div>
+      <div class="chart-card"><h3>Outils de référence</h3><canvas id="chart-outils"></canvas></div>
+      <div class="chart-card"><h3>Domaines d'application</h3><canvas id="chart-contextes"></canvas></div>
+    </div>
+
+    <!-- Perception -->
+    <div class="section-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent2)"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg> Psychométrie & Perception <span>RISQUES & OPPORTUNITÉS</span></div>
+    <div class="charts-grid">
+      <div class="chart-card"><h3>Freins et Dangers identifiés</h3><canvas id="chart-dangers"></canvas></div>
+    </div>
+
+    <!-- Éducation -->
+    <div class="section-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent2)"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg> Impact Académique <span>PRATIQUES ACTUELLES</span></div>
+    <div class="charts-grid">
+      <div class="chart-card"><h3>Fréquence d'usage (études)</h3><canvas id="chart-freq"></canvas></div>
+      <div class="chart-card"><h3>Points de blocage (préparation)</h3><canvas id="chart-difficulte"></canvas></div>
+      <div class="chart-card"><h3>Obstacles à l'adoption</h3><canvas id="chart-freins"></canvas></div>
+    </div>
+
+    <!-- PassExamAI -->
+    <div class="section-title"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent2)"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg> Potentiel de PassExamAI <span>ÉTUDE DE MARCHÉ</span></div>
+    <div class="charts-grid">
+      <div class="chart-card"><h3>Intention d'adoption</h3><canvas id="chart-adoption"></canvas></div>
+      <div class="chart-card"><h3>Préférence de plateforme</h3><canvas id="chart-format"></canvas></div>
+      <div class="chart-card"><h3>Seuils de prix acceptables</h3><canvas id="chart-budget"></canvas></div>
+      <div class="chart-card"><h3>Priorisation des Features</h3><canvas id="chart-features"></canvas></div>
+    </div>
+  `;
+
+  // Likert bars
+  const lBars = document.getElementById('likert-bars');
+  for (const [label, val] of Object.entries(d.likert_means)) {
+    lBars.innerHTML += `
+      <div class="likert-row">
+        <div class="likert-row-label">${label}</div>
+        <div class="likert-bar-wrap"><div class="likert-bar-fill" style="width:${val/5*100}%"></div></div>
+        <div class="likert-val">${val}</div>
+      </div>`;
+  }
+
+  const pie = (id, dist) => new Chart(document.getElementById(id), {
+    type: 'doughnut',
+    data: { labels: dist.labels, datasets: [{ data: dist.values, backgroundColor: COLORS, borderWidth: 0 }] },
+    options: { plugins: { legend: { position: 'bottom', labels: { padding: 12, boxWidth: 10 } } }, cutout: '55%' }
+  });
+
+  const bar = (id, dist, horizontal = false) => new Chart(document.getElementById(id), {
+    type: 'bar',
+    data: { labels: dist.labels, datasets: [{ data: dist.values, backgroundColor: COLORS, borderRadius: 4, borderWidth: 0 }] },
+    options: {
+      indexAxis: horizontal ? 'y' : 'x',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: !horizontal }, ticks: { maxRotation: horizontal ? 0 : 30 } },
+        y: { grid: { display: horizontal } }
+      }
+    }
+  });
+
+  pie('chart-niveaux', d.dist_niveau_etudes);
+  pie('chart-faculte', d.dist_faculte);
+  pie('chart-genre', d.dist_genre);
+  pie('chart-utilise', d.dist_utilise_ia);
+  bar('chart-outils', d.dist_outils_ia, true);
+  bar('chart-contextes', d.dist_contextes_ia, true);
+  bar('chart-dangers', d.dist_dangers_ia, true);
+  bar('chart-freq', d.dist_frequence_ia_etudes);
+  bar('chart-difficulte', d.dist_difficulte_preparation, true);
+  bar('chart-freins', d.dist_freins_ia_etudes, true);
+  bar('chart-adoption', d.dist_utiliserait_app);
+  pie('chart-format', d.dist_format_prefere);
+  bar('chart-budget', d.dist_budget_mensuel, true);
+  bar('chart-features', d.dist_fonctionnalites_utiles, true);
+}
+</script>
+</body>
+</html>

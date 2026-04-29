@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Enquête — IA & Éducation | UY1</title>
+  <meta name="description" content="Participez à notre étude sur l'utilisation de l'IA dans l'éducation à l'Université de Yaoundé I. Ton avis compte pour façonner les outils de demain." />
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="L'IA dans l'Éducation — Enquête UY1" />
+  <meta property="og:description" content="Contribuez à l'étude académique sur l'IA et aidez-nous à valider PassExamAI." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=1000" />
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="twitter:title" content="L'IA dans l'Éducation — Enquête UY1" />
+  <meta property="twitter:description" content="Participez à l'étude sur l'IA à l'UY1." />
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <link rel="stylesheet" href="./static/style.css" />
+</head>
+<body>
+
+  <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+
+  <div id="top-bar">
+    <div id="logo"><span id="logo-text">UY1 / Enquête IA</span></div>
+    <div class="top-bar-right">
+      <div id="step-counter">
+        <span id="step-label">Question</span>
+        <strong id="cur-step">0</strong>
+        <span id="step-of">sur</span>
+        <strong id="tot-steps">22</strong>
+      </div>
+      <button id="theme-toggle" aria-label="Toggle theme">
+        <span class="icon-moon">🌙</span>
+        <span class="icon-sun">☀️</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="app">
+    <div id="consent-screen"></div>
+    <div id="questions-container"></div>
+    <div id="thankyou-screen"></div>
+  </div>
+
+  <script src="./static/app.js"></script>
+</body>
+</html>
