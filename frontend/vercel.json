@@ -1,9 +1,24 @@
 {
   "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
     {
       "source": "/api/:match*",
       "destination": "https://jordan001237-tp-inf-232.hf.space/api/:match*"
+    },
+    {
+      "source": "/dashboard",
+      "destination": "/dashboard.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type, X-Admin-Token" }
+      ]
     }
   ]
 }
