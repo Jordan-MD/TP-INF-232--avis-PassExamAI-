@@ -2,6 +2,7 @@ import os
 import json
 import logging
 from pathlib import Path
+from dotenv import load_dotenv
 from fastapi import FastAPI, Depends, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -14,13 +15,15 @@ from app.schemas import SurveySubmission
 from app.analysis import compute_stats
 
 # ── Init ─────────────────────────────────────────────────────────
-logger = logging.getLogger("__name__")
+logger = logging.getLogger(__name__)  # variable, pas string
+load_dotenv()
+
+app = FastAPI(title="Survey API — IA & PassExamAI", version="1.0.0")
+
 @app.on_event("startup")
 def startup_event():
     logger.info("Ensuring DB schemas exists...")
     Base.metadata.create_all(bind=engine)
-
-app = FastAPI(title="Survey API — IA & PassExamAI", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -35,7 +38,7 @@ app.mount("/static", StaticFiles(directory=str(FRONTEND / "static")), name="stat
 
 ADMIN_TOKEN = os.getenv("ADMIN_TOKEN")
 if not ADMIN_TOKEN:
-    raise HTTPException(status_code=500, detail="ADMIN_TOKEN est manquant dans .env")
+    raise RuntimeError("ADMIN_TOKEN est manquant dans .env")  # HTTPException ne fonctionne qu'à l'intérieur d'une requête
 
 def verify_admin(x_admin_token: str = Header(...)):
     if x_admin_token != ADMIN_TOKEN:

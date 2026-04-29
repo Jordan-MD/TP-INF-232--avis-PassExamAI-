@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, String, Text, DateTime, index
+from sqlalchemy import Column, Integer, String, Text, DateTime
 from app.database import Base
 
 
@@ -8,7 +8,7 @@ class Response(Base):
     __tablename__ = "responses"
 
     id = Column(Integer, primary_key=True, index=True)
-    submitted_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
+    submitted_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     # Section 0 — Profil
     niveau_etudes = Column(String(50))

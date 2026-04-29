@@ -1,16 +1,18 @@
 FROM python:3.11-slim
 
-# Définir le dossier de travail
+# Installer uv dans le conteneur
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 WORKDIR /code
 
-# Copier le fichier des dépendances
-COPY ./requirements.txt /code/requirements.txt
+# Copier les fichiers de configuration uv
+COPY ./backend/pyproject.toml ./backend/uv.lock* /code/
 
-# Installer les dépendances
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+# Installer les dépendances avec uv (crée un environnement optimisé)
+RUN uv pip install --system --no-cache -r /code/pyproject.toml
 
-# Copier le dossier backend complet
-COPY ./backend /code/backend
+# Copier le reste du code
+COPY ./backend /code
 
-# Lancer l'application FastAPI sur le port 7860 (port par défaut de Hugging Face Spaces)
-CMD ["uvicorn", "backend.app.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Lancer l'app
+CMD ["uvicorn", "app.app:app", "--host", "0.0.0.0", "--port", "7860"]
