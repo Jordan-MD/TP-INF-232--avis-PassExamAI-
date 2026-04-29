@@ -1,16 +1,3 @@
----
-title: Mon Projet FastAPI
-emoji: 🚀
-colorFrom: blue
-colorTo: green
-sdk: docker
-pinned: false
----
-
-# TP-INF-232
-
-Ceci est mon backend FastAPI déployé sur Hugging Face Spaces.
-
 # Enquête IA & PassExamAI — Documentation
 
 ## Structure du projet
@@ -89,13 +76,17 @@ passexam-admin-2024
 ## Déploiement
 
 ### Backend (Hugging Face Spaces)
+
 Le backend est déployé dans un container Docker sur Hugging Face.
+
 1. Le projet utilise un `Dockerfile` qui installe `uv` pour une gestion optimale des dépendances.
 2. Déploiement automatique via GitHub Actions (voir `.github/workflows/deploy.yml`).
 3. Variables d'environnement nécessaires : `ADMIN_TOKEN`.
 
 ### Frontend (Vercel)
+
 Le frontend est hébergé sur Vercel pour une performance maximale.
+
 1. Connecter le repo GitHub à Vercel.
 2. Configurer le répertoire racine sur `frontend/`.
 3. S'assurer que les appels API pointent vers l'URL Hugging Face.
