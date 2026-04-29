@@ -1,12 +1,9 @@
 {
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/api/(.*)",
       "destination": "https://jordan001237-tp-inf-232.hf.space/api/$1"
-    },
-    {
-      "source": "/dashboard",
-      "destination": "/dashboard.html"
     }
   ]
 }
