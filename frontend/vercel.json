@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://[TON_ESPACE_HUGGINGFACE].hf.space/api/:path*"
+      "destination": "https://jordan001237-tp-inf-232.hf.space/api/:path*"
     }
   ]
 }
