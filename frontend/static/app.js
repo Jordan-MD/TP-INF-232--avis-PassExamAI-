@@ -24,14 +24,14 @@ const TRANSLATIONS = {
     logo:"UY1 / Enquête IA", stepOf:"Question", of:"sur",
     start:"Commencer l'enquête →", next:"Suivant →", back:"← Retour",
     submit:"Valider et Envoyer ✓", continue:"Continuer →",
-    sending:"Transmission en cours...", retry:"Erreur — Réessayer ?",
-    required:"Cette question est essentielle pour l'étude, merci d'y répondre.",
+    sending:"Traitement IA...", retry:"Erreur — Réessayer ?",
+    required:"Cette question est essentielle pour l'étude.",
     academicStudy:"📊 Étude académique (INF 232)",
     consentTitle:"L'IA dans l'enseignement supérieur —", consentAccent:"votre expérience nous intéresse.",
     minutes:"~5-7 minutes", anonymous:"100% Anonyme", numQuestions:"22 questions",
     consentText:"<strong>Objectif :</strong> Collecter des données pour une analyse descriptive sur l'impact des outils d'IA (ChatGPT, etc.) à l'Université de Yaoundé I. <br><strong>Confidentialité :</strong> Vos réponses sont traitées de manière agrégée et strictement anonyme.",
-    tyTitle:"Merci pour votre précieuse contribution !",
-    tyText:"Vos données ont été enregistrées avec succès. Elles vont maintenant alimenter l'analyse descriptive en temps réel sur notre tableau de bord.",
+    tyTitle:"Merci pour votre contribution !",
+    tyText:"Vos données ont été enregistrées avec succès par notre moteur d'analyse. Elles alimentent désormais le dashboard en temps réel.",
     tyDashboard:"Accéder au Dashboard d'Analyse →",
     sections:{S0:"Profil Académique",S1:"Perception & Attitudes",S2:"Pratiques & Éducation",S3:"Validation PassExamAI"},
     filiereLabel: "Dans quelle filière es-tu inscrit ?",
@@ -42,42 +42,42 @@ const TRANSLATIONS = {
 // ═══════════════════════════════════════════════════════════════
 // QUESTIONS SETUP
 // ═══════════════════════════════════════════════════════════════
-const lang = 'fr'; // On force le français comme demandé
+const lang = 'fr';
 const T = TRANSLATIONS[lang];
 
 const QUESTIONS_BASE = [
   // SECTION 0 : PROFIL
-  {section:"S0",id:"niveau_etudes",type:"radio",num:"Q1",label: "À quel niveau d'études es-tu actuellement inscrit à l'Université ?",options:["Licence 1","Licence 2","Licence 3","Master 1","Master 2","Doctorat","Autre"]},
+  {section:"S0",id:"niveau_etudes",type:"radio",num:"Q1",label: "À quel niveau d'études es-tu actuellement inscrit ?",options:["Licence 1","Licence 2","Licence 3","Master 1","Master 2","Doctorat","Autre"]},
   {section:"S0",id:"faculte",type:"radio",num:"Q2",label: "De quelle faculté ou école dépends-tu ?",options:Object.keys(FACULTIES_DATA)},
   {section:"S0",id:"filiere",type:"radio",num:"Q2b",label: "Quelle est ta filière d'études spécifique ?", options:[]}, 
   {section:"S0",id:"genre",type:"radio",num:"Q3",cols:2,label: "Quel est ton genre ?",options:["Homme","Femme"]},
-  {section:"S0",id:"utilise_ia",type:"radio",num:"Q4",cols:2,label: "As-tu déjà utilisé un outil basé sur l'Intelligence Artificielle (IA) dans ta vie quotidienne ou académique ?",options:["Oui","Non"]},
-  {section:"S0",id:"outils_ia",type:"checkbox",num:"Q5",cols:2,optional:true,label: "Parmi ces outils, lesquels connais-tu ou utilises-tu ?",hint:"Sélectionne tout ce qui s'applique",options:["ChatGPT (OpenAI)","Gemini (Google)","Claude (Anthropic)","GitHub Copilot (Code)","Midjourney / DALL-E (Images)","Autre outil spécialisé","Aucun"]},
-  {section:"S0",id:"contextes_ia",type:"checkbox",num:"Q5b",max:2,optional:true,label: "Dans quels contextes principaux fais-tu appel à l'IA ?",options:[{label:"Études & Révisions",emoji:"📚"},{label:"Productivité (Emails, Planning)",emoji:"⚙️"},{label:"Recherche documentaire",emoji:"🔍"},{label:"Loisirs & Création",emoji:"🎨"},{label:"Programmation / Code",emoji:"💻"}]},
+  {section:"S0",id:"utilise_ia",type:"radio",num:"Q4",cols:2,label: "As-tu déjà utilisé un outil basé sur l'IA dans tes études ?",options:["Oui","Non"]},
+  {section:"S0",id:"outils_ia",type:"checkbox",num:"Q5",cols:2,optional:true,label: "Quels outils d'IA connais-tu ou utilises-tu ?",hint:"Sélectionne tout ce qui s'applique",options:["ChatGPT (OpenAI)","Gemini (Google)","Claude (Anthropic)","GitHub Copilot (Code)","Midjourney / DALL-E (Images)","Autre outil spécialisé","Aucun"]},
+  {section:"S0",id:"contextes_ia",type:"checkbox",num:"Q5b",max:2,optional:true,label: "Dans quels contextes fais-tu appel à l'IA ?",options:[{label:"Études & Révisions",emoji:"📚"},{label:"Productivité (Emails, Planning)",emoji:"⚙️"},{label:"Recherche documentaire",emoji:"🔍"},{label:"Loisirs & Création",emoji:"🎨"},{label:"Programmation / Code",emoji:"💻"}]},
   
   // SECTION 1 : PERCEPTION
-  {section:"S1",id:"niveau_connaissance_ia",type:"likert",num:"Q6",label: "Comment auto-évalues-tu ton niveau de connaissance globale sur le fonctionnement de l'IA ?",likertLabels:["Nul","Très faible","Moyen","Bon","Expert"]},
-  {section:"S1",id:"ia_opportunite",type:"likert",num:"Q7",label: "Dans quelle mesure penses-tu que l'IA représente une opportunité majeure pour l'avenir de l'éducation ?",likertLabels:["Pas du tout","Faiblement","Neutre","Favorable","Totalement"]},
-  {section:"S1",id:"ia_menace_emploi",type:"likert",num:"Q8",label: "Es-tu inquiet que l'IA puisse remplacer certains métiers ou menacer ton futur emploi ?",likertLabels:["Pas inquiet","Peu inquiet","Neutre","Inquiet","Très inquiet"]},
-  {section:"S1",id:"confiance_ia",type:"likert",num:"Q9",label: "Quel est ton degré de confiance envers les informations générées par une Intelligence Artificielle ?",likertLabels:["Nulle","Faible","Moyenne","Grande","Totale"]},
-  {section:"S1",id:"dangers_ia",type:"checkbox",num:"Q10",optional:true,label: "Quels sont les dangers liés à l'IA qui te préoccupent le plus ?",options:["Atteinte à la vie privée","Perte d'emplois","Désinformation (Fake news)","Dépendance intellectuelle","Biais algorithmiques"]},
+  {section:"S1",id:"niveau_connaissance_ia",type:"likert",num:"Q6",label: "Comment évalues-tu ton niveau de connaissance sur l'IA ?",likertLabels:["Nul","Très faible","Moyen","Bon","Expert"]},
+  {section:"S1",id:"ia_opportunite",type:"likert",num:"Q7",label: "L'IA représente-t-elle une opportunité pour l'éducation ?",likertLabels:["Pas du tout","Faiblement","Neutre","Favorable","Totalement"]},
+  {section:"S1",id:"ia_menace_emploi",type:"likert",num:"Q8",label: "Es-tu inquiet que l'IA puisse menacer ton futur emploi ?",likertLabels:["Pas inquiet","Peu inquiet","Neutre","Inquiet","Très inquiet"]},
+  {section:"S1",id:"confiance_ia",type:"likert",num:"Q9",label: "Quel est ton degré de confiance envers les réponses de l'IA ?",likertLabels:["Nulle","Faible","Moyenne","Grande","Totale"]},
+  {section:"S1",id:"dangers_ia",type:"checkbox",num:"Q10",optional:true,label: "Quels dangers liés à l'IA te préoccupent le plus ?",options:["Atteinte à la vie privée","Perte d'emplois","Désinformation (Fake news)","Dépendance intellectuelle","Biais algorithmiques"]},
   
   // SECTION 2 : ÉDUCATION
-  {section:"S2",id:"frequence_ia_etudes",type:"radio",num:"Q11",label: "À quelle fréquence utilises-tu l'IA pour tes travaux universitaires (devoirs, révisions) ?",options:["Jamais","Rarement (1 fois/mois)","Parfois (1 fois/semaine)","Souvent (plusieurs fois/semaine)","Quotidiennement"]},
-  {section:"S2",id:"usage_ia_etudes",type:"checkbox",num:"Q12",optional:true,label: "Plus précisément, pour quelles tâches académiques utilises-tu l'IA ?",options:["Résumer des longs textes","Expliquer des concepts complexes","Générer des exercices d'entraînement","Aide à la rédaction de rapports","Aide à la programmation (code)"]},
-  {section:"S2",id:"methode_preparation_exam",type:"checkbox",num:"Q13",label: "Quelle est ta méthode principale pour préparer tes examens actuellement ?",options:["Relire mes notes de cours","Traiter des anciens sujets (annales)","Travailler en groupe d'étude","Prendre des cours de soutien (tutorat)","Utiliser des outils d'IA","Aucune méthode structurée"]},
-  {section:"S2",id:"difficulte_preparation",type:"radio",num:"Q14",label: "Quelle est ta plus grande difficulté lors de la préparation d'un examen ?",options:["Manque de méthode de travail","Manque de ressources pédagogiques","Manque de temps (mauvaise gestion)","Manque de motivation","Aucune difficulté particulière"]},
-  {section:"S2",id:"ia_ameliore_reussite",type:"likert",num:"Q15",label: "Penses-tu qu'une utilisation encadrée de l'IA pourrait significativement améliorer les taux de réussite à l'UY1 ?",likertLabels:["Non","Peu probable","Peut-être","Probablement","Certainement"]},
-  {section:"S2",id:"freins_ia_etudes",type:"checkbox",num:"Q16",optional:true,label: "Selon toi, quels sont les principaux freins à l'adoption de l'IA par les étudiants ?",options:["Manque de confiance technique","Coût des abonnements Premium","Problèmes de connexion Internet","Peur d'être accusé de triche","Aucun frein identifié"]},
+  {section:"S2",id:"frequence_ia_etudes",type:"radio",num:"Q11",label: "Fréquence d'usage de l'IA pour tes travaux universitaires ?",options:["Jamais","Rarement","Parfois","Souvent","Quotidiennement"]},
+  {section:"S2",id:"usage_ia_etudes",type:"checkbox",num:"Q12",optional:true,label: "Pour quelles tâches académiques utilises-tu l'IA ?",options:["Résumer des longs textes","Expliquer des concepts complexes","Générer des exercices","Aide à la rédaction","Aide à la programmation"]},
+  {section:"S2",id:"methode_preparation_exam",type:"checkbox",num:"Q13",label: "Méthode principale pour préparer tes examens ?",options:["Relire mes notes","Traiter des anciens sujets","Travailler en groupe","Cours de soutien","Utiliser des outils d'IA","Aucune méthode"]},
+  {section:"S2",id:"difficulte_preparation",type:"radio",num:"Q14",label: "Ta plus grande difficulté lors des révisions ?",options:["Manque de méthode","Manque de ressources","Mauvaise gestion du temps","Manque de motivation","Aucune difficulté"]},
+  {section:"S2",id:"ia_ameliore_reussite",type:"likert",num:"Q15",label: "L'IA pourrait-elle améliorer les taux de réussite à l'UY1 ?",likertLabels:["Non","Peu probable","Peut-être","Probablement","Certainement"]},
+  {section:"S2",id:"freins_ia_etudes",type:"checkbox",num:"Q16",optional:true,label: "Quels sont les freins à l'adoption de l'IA ?",options:["Manque de confiance technique","Coût des abonnements","Connexion Internet","Peur de tricherie","Aucun frein"]},
   
   // SECTION 3 : VALIDATION
-  {section:"S3",id:"_intro",type:"info",num:"CONCEPT",label: "Imagine une plateforme conçue pour accompagner les étudiants de l'UY1. Elle permet de générer des plans de révision personnalisés et des examens blancs à partir de vos propres supports de cours."},
-  {section:"S3",id:"solution_repond_probleme",type:"likert",num:"Q17",label: "Dans quelle mesure penses-tu que PassExamAI répond à un réel besoin des étudiants de l'UY1 ?",likertLabels:["Inutile","Peu utile","Moyennement","Très utile","Indispensable"]},
-  {section:"S3",id:"fonctionnalites_utiles",type:"checkbox",num:"Q18",optional:true,label: "Quelles fonctionnalités te semblent les plus pertinentes pour ta réussite ?",options:["Roadmap de révision automatique","Génération d'exercices corrigés","Chatbot tuteur disponible 24h/24","Simulation d'examens chronométrés","Analyse des points faibles"]},
-  {section:"S3",id:"utiliserait_app",type:"radio",num:"Q19",label: "Si PassExamAI était disponible demain, quelle serait ton intention d'utilisation ?",options:["Je ne l'utiliserai pas","Je l'essayerai par curiosité","Je l'utiliserai ponctuellement","Je l'utiliserai pour chaque examen"]},
-  {section:"S3",id:"format_prefere",type:"radio",num:"Q20",label: "Quel format d'application préférerais-tu utiliser ?",options:["Application Web (Navigateur)","Application Mobile (iOS/Android)","Les deux (Synchrone)"]},
-  {section:"S3",id:"budget_mensuel",type:"radio",num:"Q21",label: "Quel budget mensuel serais-tu prêt à consacrer pour un accès complet à un tel service ?",options:["Uniquement si c'est gratuit","Moins de 1 000 FCFA","Entre 1 000 et 3 000 FCFA","Entre 3 000 et 5 000 FCFA","Plus de 5 000 FCFA"]},
-  {section:"S3",id:"suggestions",type:"textarea",num:"Q22",optional:true,label: "As-tu des suggestions ou des remarques pour améliorer ce projet avant son lancement ?",placeholder:"Tes idées comptent..."},
+  {section:"S3",id:"_intro",type:"info",num:"CONCEPT",label: "Imagine PassExamAI : une plateforme qui génère des plans de révision et des examens blancs personnalisés à partir de TES propres cours."},
+  {section:"S3",id:"solution_repond_probleme",type:"likert",num:"Q17",label: "Dans quelle mesure PassExamAI répond à un besoin réel ?",likertLabels:["Inutile","Peu utile","Moyennement","Très utile","Indispensable"]},
+  {section:"S3",id:"fonctionnalites_utiles",type:"checkbox",num:"Q18",optional:true,label: "Fonctionnalités les plus pertinentes selon toi ?",options:["Roadmap automatique","Exercices corrigés","Chatbot tuteur 24h/24","Simulations d'examens","Analyse des points faibles"]},
+  {section:"S3",id:"utiliserait_app",type:"radio",num:"Q19",label: "Intention d'utilisation si disponible ?",options:["Jamais","Curiosité","Ponctuellement","Systématiquement"]},
+  {section:"S3",id:"format_prefere",type:"radio",num:"Q20",label: "Format d'application préféré ?",options:["Application Web","Application Mobile","Les deux"]},
+  {section:"S3",id:"budget_mensuel",type:"radio",num:"Q21",label: "Budget mensuel acceptable pour ce service ?",options:["Uniquement gratuit","Moins de 1 000 FCFA","1 000 - 3 000 FCFA","3 000 - 5 000 FCFA","Plus de 5 000 FCFA"]},
+  {section:"S3",id:"suggestions",type:"textarea",num:"Q22",optional:true,label: "Des suggestions pour améliorer PassExamAI ?",placeholder:"Tes idées comptent..."},
 ];
 
 const QUESTIONS = QUESTIONS_BASE;
@@ -87,41 +87,64 @@ let currentIndex = 0;
 const answers    = {};
 
 // ═══════════════════════════════════════════════════════════════
+// TYPEWRITER EFFECT
+// ═══════════════════════════════════════════════════════════════
+const HERO_WORDS = ["l'Éducation.", "l'Innovation.", "la Réussite.", "le Futur."];
+let wordIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+let typeSpeed = 100;
+
+function typeEffect() {
+  const target = document.getElementById('hero-typed');
+  if (!target) return;
+
+  const currentWord = HERO_WORDS[wordIndex];
+  
+  if (isDeleting) {
+    target.textContent = currentWord.substring(0, charIndex - 1);
+    charIndex--;
+    typeSpeed = 50;
+  } else {
+    target.textContent = currentWord.substring(0, charIndex + 1);
+    charIndex++;
+    typeSpeed = 150;
+  }
+
+  if (!isDeleting && charIndex === currentWord.length) {
+    isDeleting = true;
+    typeSpeed = 2000; // Pause at end
+  } else if (isDeleting && charIndex === 0) {
+    isDeleting = false;
+    wordIndex = (wordIndex + 1) % HERO_WORDS.length;
+    typeSpeed = 500;
+  }
+
+  setTimeout(typeEffect, typeSpeed);
+}
+
+// ═══════════════════════════════════════════════════════════════
 // LOGIC
 // ═══════════════════════════════════════════════════════════════
 
-function initTheme() {
-  const saved = localStorage.getItem('survey-theme');
-  const auto  = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  applyTheme(saved || auto);
-}
-function applyTheme(t) {
-  document.documentElement.setAttribute('data-theme', t);
-  localStorage.setItem('survey-theme', t);
-}
-function toggleTheme() {
-  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-}
-
 function renderConsent() {
-  document.getElementById('logo-text').textContent  = T.logo;
-  document.getElementById('step-label').textContent = T.stepOf;
-  document.getElementById('step-of').textContent    = T.of;
-
-  document.getElementById('consent-screen').innerHTML = `
-    <div class="consent-tag">${T.academicStudy}</div>
+  const container = document.getElementById('consent-screen');
+  container.innerHTML = `
+    <div class="consent-tag"><i data-lucide="graduation-cap"></i>${T.academicStudy}</div>
     <h1>${T.consentTitle}<br><em>${T.consentAccent}</em></h1>
     <div class="consent-meta">
-      <span class="meta-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${T.minutes}</span>
-      <span class="meta-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>${T.anonymous}</span>
-      <span class="meta-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>${T.numQuestions}</span>
+      <span class="meta-pill"><i data-lucide="clock"></i>${T.minutes}</span>
+      <span class="meta-pill"><i data-lucide="shield"></i>${T.anonymous}</span>
+      <span class="meta-pill"><i data-lucide="list"></i>${T.numQuestions}</span>
     </div>
     <div class="consent-box">${T.consentText}</div>
-    <button id="btn-start" class="btn btn-primary" style="width:100%;padding:16px;font-size:16px;">${T.start}</button>
+    <button id="btn-start" class="btn btn-primary btn-glow" style="width:100%;padding:18px;font-size:16px;justify-content:center;">
+      <span>${T.start}</span>
+    </button>
   `;
 
   document.getElementById('btn-start').onclick = startSurvey;
-  document.getElementById('theme-toggle').onclick = toggleTheme;
+  lucide.createIcons();
 }
 
 function esc(s) {
@@ -176,8 +199,11 @@ function renderQuestion(q, idx) {
   const isFirst = idx === 0;
   const isLast  = idx === QUESTIONS.length - 1;
   
+  const iconMap = { S0: 'user', S1: 'eye', S2: 'book-open', S3: 'rocket' };
+  const icon = iconMap[q.section] || 'help-circle';
+
   let html = `
-    <div class="section-tag">${sLabel}</div>
+    <div class="section-tag"><i data-lucide="${icon}"></i>${sLabel}</div>
   `;
 
   if (q.type === 'info') {
@@ -187,15 +213,17 @@ function renderQuestion(q, idx) {
       <div class="question-label"><span class="q-num">${q.num}</span>${q.label}</div>
       ${q.hint ? `<p class="hint">${q.hint}</p>` : ''}
       <div id="input-container-${q.id}">${buildInput(q)}</div>
-      <p class="error-msg" id="err-${idx}">${T.required}</p>
+      <p class="error-msg" id="err-${idx}"><i data-lucide="alert-circle"></i>${T.required}</p>
     `;
   }
 
   const nextLabel = isLast ? T.submit : (q.type === 'info' ? T.continue : T.next);
+  const nextIcon = isLast ? 'check' : 'arrow-right';
+  
   html += `
     <div class="nav-row">
-      ${!isFirst ? `<button class="btn btn-ghost" onclick="goBack()">${T.back}</button>` : '<span></span>'}
-      <button class="btn btn-primary" onclick="goNext(${idx})">${nextLabel}</button>
+      ${!isFirst ? `<button class="btn btn-ghost" onclick="goBack()"><i data-lucide="chevron-left"></i><span>${T.back}</span></button>` : '<span></span>'}
+      <button class="btn btn-primary" onclick="goNext(${idx})"><span>${nextLabel}</span><i data-lucide="${nextIcon}"></i></button>
     </div>
   `;
 
@@ -213,6 +241,7 @@ function buildAllScreens() {
     container.appendChild(div);
     bindListeners(div, q, idx);
   });
+  lucide.createIcons();
 }
 
 function bindListeners(div, q, idx) {
@@ -227,15 +256,13 @@ function bindListeners(div, q, idx) {
   div.querySelectorAll('.option-card[data-value]').forEach(card => {
     card.onclick = () => {
       const grid = card.closest('.options-grid');
-      const inputType = grid ? grid.dataset.input : (card.closest('[data-input]') ? card.closest('[data-input]').dataset.input : null);
+      const inputType = grid ? grid.dataset.input : null;
       
       if (inputType === 'radio') {
         grid.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         answers[q.id] = card.dataset.value;
-        if (q.id === 'faculte') {
-          updateFiliereOptions(card.dataset.value);
-        }
+        if (q.id === 'faculte') updateFiliereOptions(card.dataset.value);
       } 
       else if (inputType === 'checkbox') {
         const gridBox = card.closest('.options-grid');
@@ -270,18 +297,13 @@ function bindListeners(div, q, idx) {
 function updateFiliereOptions(faculty) {
   const filiereIdx = QUESTIONS.findIndex(q => q.id === 'filiere');
   if (filiereIdx === -1) return;
-  
   const filiereQ = QUESTIONS[filiereIdx];
   filiereQ.options = FACULTIES_DATA[faculty] || [];
   answers['filiere'] = null; 
-  
-  const screen = document.getElementById(`qs-${filiereIdx}`);
-  if (screen) {
-    const container = screen.querySelector(`#input-container-filiere`);
-    if (container) {
-      container.innerHTML = buildInput(filiereQ);
-      bindListeners(screen, filiereQ, filiereIdx);
-    }
+  const container = document.querySelector(`#input-container-filiere`);
+  if (container) {
+    container.innerHTML = buildInput(filiereQ);
+    bindListeners(container.closest('.question-screen'), filiereQ, filiereIdx);
   }
 }
 
@@ -296,12 +318,17 @@ function isValid(q) {
 
 function clearError(idx) {
   const el = document.getElementById(`err-${idx}`);
-  if (el) el.style.display = 'none';
+  if (el) el.classList.remove('visible');
+  document.getElementById(`qs-${idx}`).classList.remove('shake');
 }
 
 function showError(idx) {
   const el = document.getElementById(`err-${idx}`);
-  if (el) el.style.display = 'block';
+  if (el) el.classList.add('visible');
+  const screen = document.getElementById(`qs-${idx}`);
+  screen.classList.remove('shake');
+  void screen.offsetWidth; // trigger reflow
+  screen.classList.add('shake');
 }
 
 function goNext(idx) {
@@ -318,11 +345,9 @@ function goBack() {
 function showScreen(idx) {
   const currentScreen = document.getElementById(`qs-${currentIndex}`);
   if (currentScreen) currentScreen.classList.remove('active');
-  
   currentIndex = idx;
   const nextScreen = document.getElementById(`qs-${currentIndex}`);
   if (nextScreen) nextScreen.classList.add('active');
-  
   updateProgress();
   window.scrollTo({top:0, behavior:'smooth'});
 }
@@ -337,6 +362,8 @@ function updateProgress() {
 }
 
 function startSurvey() {
+  document.getElementById('hero-section').style.display = 'none';
+  document.getElementById('app').classList.add('visible');
   document.getElementById('consent-screen').style.display = 'none';
   buildAllScreens();
   currentIndex = 0;
@@ -345,16 +372,37 @@ function startSurvey() {
 }
 
 async function submitSurvey(idx) {
-  const btn = document.querySelector(`#qs-${idx} .btn-primary`);
-  btn.disabled = true;
-  btn.textContent = T.sending;
+  const loader = document.getElementById('ai-loader-overlay');
+  const loaderText = document.getElementById('ai-loader-text');
+  const loaderBar = document.getElementById('ai-loader-bar-fill');
+  
+  loader.classList.add('active');
+  
+  const steps = [
+    { text: "Analyse des réponses...", prog: 30 },
+    { text: "Traitement neuronal...", prog: 65 },
+    { text: "Génération du rapport...", prog: 90 },
+    { text: "Finalisation...", prog: 100 }
+  ];
 
+  let step = 0;
+  const interval = setInterval(() => {
+    if (step < steps.length) {
+      loaderText.textContent = steps[step].text;
+      loaderBar.style.width = steps[step].prog + '%';
+      step++;
+    } else {
+      clearInterval(interval);
+    }
+  }, 800);
+
+  // Payload explicite avec valeurs par défaut pour éviter les erreurs Pydantic (ge=1, le=5)
   const payload = {
     niveau_etudes:            answers.niveau_etudes            || '',
     faculte:                  answers.faculte                  || '',
     filiere:                  answers.filiere                  || '',
     genre:                    answers.genre                    || '',
-    utilise_ia:               (answers.utilise_ia==='Oui') ? 'oui' : 'non',
+    utilise_ia:               (answers.utilise_ia === 'Oui') ? 'oui' : 'non',
     outils_ia:                answers.outils_ia                || [],
     contextes_ia:             answers.contextes_ia             || [],
     niveau_connaissance_ia:   answers.niveau_connaissance_ia   ?? 1,
@@ -377,53 +425,63 @@ async function submitSurvey(idx) {
   };
 
   try {
-    const res = await fetch(`/api/submit`, {
+    const res = await fetch(`${API_BASE}/api/submit`, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
       body: JSON.stringify(payload)
     });
 
-    if (!res.ok) throw new Error('API Error');
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => ({}));
+      console.error('Validation error:', errBody);
+      throw new Error(`API Error ${res.status}`);
+    }
 
+    // Wait for animation to feel "real"
+    await new Promise(r => setTimeout(r, 3200));
+    
+    loader.classList.remove('active');
     document.getElementById('questions-container').style.display = 'none';
     document.getElementById('progress-bar-wrap').style.display   = 'none';
     document.getElementById('step-counter').style.display        = 'none';
     
+    const dashUrl = (window.location.protocol === 'file:' || window.location.hostname === '') ? 'dashboard.html' : '/dashboard';
     const ty = document.getElementById('thankyou-screen');
     ty.innerHTML = `
-      <span class="ty-icon">🎉</span>
+      <div class="ty-icon-wrap"><i data-lucide="check"></i></div>
       <h2>${T.tyTitle}</h2>
       <p>${T.tyText}</p>
-      <a href="#" id="ty-dashboard-link" class="btn btn-primary" style="display:inline-block;margin-top:24px;text-decoration:none;">${T.tyDashboard}</a>
+      <a href="${dashUrl}" class="btn btn-primary btn-glow" style="display:inline-flex;margin-top:24px;text-decoration:none;justify-content:center;width:100%">
+        <i data-lucide="bar-chart-3"></i>
+        <span>${T.tyDashboard}</span>
+      </a>
     `;
     ty.classList.add('active');
-    
-    // Set dynamic link for dashboard
-    const dashUrl = (window.location.protocol === 'file:' || window.location.hostname === '') ? 'dashboard.html' : '/dashboard';
-    document.getElementById('ty-dashboard-link').href = dashUrl;
+    lucide.createIcons();
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#00f0ff', '#a855f7', '#7eeea0'] });
 
-    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
   } catch (err) {
     console.error(err);
-    btn.disabled = false;
-    btn.textContent = T.retry;
+    loader.classList.remove('active');
+    alert("Erreur lors de l'envoi. Veuillez réessayer.");
   }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  initTheme();
-  renderConsent();
-  
-  // Add direct link to dashboard in header
+  // Résoudre l'URL du dashboard selon l'environnement (file:// local vs Vercel cleanUrls)
   const dashUrl = (window.location.protocol === 'file:' || window.location.hostname === '') ? 'dashboard.html' : '/dashboard';
-  const logo = document.getElementById('logo');
-  if (logo) {
-    const dashLink = document.createElement('a');
-    dashLink.href = dashUrl;
-    dashLink.innerHTML = '<span style="margin-right:5px">📊</span> Dashboard';
-    dashLink.style.cssText = 'margin-left:16px; font-size:11px; font-weight:600; font-family:var(--font-mono); color:var(--accent2); text-decoration:none; padding:4px 8px; border:1px solid var(--border); border-radius:6px; transition:0.2s; display:inline-flex; align-items:center';
-    dashLink.onmouseover = () => { dashLink.style.background = 'var(--bg2)'; dashLink.style.borderColor = 'var(--accent2)'; };
-    dashLink.onmouseout = () => { dashLink.style.background = 'transparent'; dashLink.style.borderColor = 'var(--border)'; };
-    logo.appendChild(dashLink);
-  }
+  const navLink = document.getElementById('nav-dash-link');
+  if (navLink) navLink.href = dashUrl;
+
+  typeEffect();
+  renderConsent();
+
+  document.getElementById('hero-start-btn').onclick = () => {
+    window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+    setTimeout(() => {
+      document.getElementById('hero-section').style.display = 'none';
+      document.getElementById('app').classList.add('visible');
+    }, 500);
+  };
+  lucide.createIcons();
 });

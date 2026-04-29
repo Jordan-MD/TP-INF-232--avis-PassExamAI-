@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr" data-theme="dark">
+<html lang="fr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Enquête — IA & Éducation | UY1</title>
   <meta name="description" content="Participez à notre étude sur l'utilisation de l'IA dans l'éducation à l'Université de Yaoundé I. Ton avis compte pour façonner les outils de demain." />
-  
+
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:title" content="L'IA dans l'Éducation — Enquête UY1" />
@@ -16,19 +16,38 @@
   <meta property="twitter:card" content="summary_large_image" />
   <meta property="twitter:title" content="L'IA dans l'Éducation — Enquête UY1" />
   <meta property="twitter:description" content="Participez à l'étude sur l'IA à l'UY1." />
-  
+
+  <!-- Fonts: Space Grotesk -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+  <!-- Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
   <link rel="stylesheet" href="./static/style.css" />
 </head>
 <body>
 
+  <!-- Background orbs -->
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+
+  <!-- Progress Bar -->
   <div id="progress-bar-wrap"><div id="progress-bar"></div></div>
 
+  <!-- Top Bar -->
   <div id="top-bar">
-    <div id="logo"><span id="logo-text">UY1 / Enquête IA</span></div>
+    <div id="logo">
+      <i data-lucide="brain" class="logo-icon"></i>
+      <span id="logo-text">UY1 / Enquête IA</span>
+    </div>
     <div class="top-bar-right">
       <div id="step-counter">
         <span id="step-label">Question</span>
@@ -36,17 +55,72 @@
         <span id="step-of">sur</span>
         <strong id="tot-steps">22</strong>
       </div>
-      <button id="theme-toggle" aria-label="Toggle theme">
-        <span class="icon-moon">🌙</span>
-        <span class="icon-sun">☀️</span>
-      </button>
+      <a href="dashboard.html" class="nav-dash-link" id="nav-dash-link">
+        <i data-lucide="bar-chart-3"></i>
+        <span>Dashboard</span>
+      </a>
     </div>
   </div>
 
+  <!-- Hero Section -->
+  <section id="hero-section">
+    <div class="hero-bg-image"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i data-lucide="sparkles"></i>
+        <span>INF 232 EC2 — Étude Académique</span>
+      </div>
+      <h1 class="hero-title">
+        L'Intelligence Artificielle<br>
+        dans <span class="hero-typed" id="hero-typed"></span><span class="typed-cursor">|</span>
+      </h1>
+      <p class="hero-subtitle">
+        Explorez l'impact de l'IA sur l'enseignement supérieur au Cameroun.
+        Vos réponses alimentent une analyse descriptive en temps réel.
+      </p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <i data-lucide="clock"></i>
+          <span>~5-7 min</span>
+        </div>
+        <div class="hero-stat">
+          <i data-lucide="shield-check"></i>
+          <span>100% Anonyme</span>
+        </div>
+        <div class="hero-stat">
+          <i data-lucide="list-checks"></i>
+          <span>22 Questions</span>
+        </div>
+      </div>
+      <button id="hero-start-btn" class="btn btn-primary btn-glow">
+        <i data-lucide="arrow-right"></i>
+        <span>Commencer l'enquête</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Main App -->
   <div id="app">
     <div id="consent-screen"></div>
     <div id="questions-container"></div>
     <div id="thankyou-screen"></div>
+  </div>
+
+  <!-- AI Loader Overlay -->
+  <div id="ai-loader-overlay">
+    <div class="ai-loader-card">
+      <div class="ai-loader-rings">
+        <div class="ring ring-1"></div>
+        <div class="ring ring-2"></div>
+        <div class="ring ring-3"></div>
+        <i data-lucide="brain" class="ai-loader-icon"></i>
+      </div>
+      <p class="ai-loader-text" id="ai-loader-text">Analyse des réponses...</p>
+      <div class="ai-loader-bar">
+        <div class="ai-loader-bar-fill" id="ai-loader-bar-fill"></div>
+      </div>
+    </div>
   </div>
 
   <script src="./static/app.js"></script>

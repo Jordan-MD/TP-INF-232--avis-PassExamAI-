@@ -101,6 +101,44 @@ def compute_stats(db: Session) -> dict:
         for label, field in likert_fields.items()
     }
 
+    # 6b. Statistiques descriptives complètes pour chaque variable Likert
+    likert_descriptive = {}
+    for label, field in likert_fields.items():
+        if field in df.columns:
+            series = df[field].dropna()
+            if len(series) > 0:
+                q1 = float(np.percentile(series, 25))
+                q3 = float(np.percentile(series, 75))
+                likert_descriptive[label] = {
+                    "mean":     round(float(series.mean()), 2),
+                    "median":   round(float(series.median()), 2),
+                    "mode":     int(series.mode().iloc[0]) if len(series.mode()) > 0 else 0,
+                    "stddev":   round(float(series.std()), 2),
+                    "variance": round(float(series.var()), 2),
+                    "min":      int(series.min()),
+                    "max":      int(series.max()),
+                    "q1":       round(q1, 2),
+                    "q3":       round(q3, 2),
+                    "iqr":      round(q3 - q1, 2),
+                    "n":        int(len(series)),
+                }
+            else:
+                likert_descriptive[label] = None
+        else:
+            likert_descriptive[label] = None
+    stats_dict["likert_descriptive"] = likert_descriptive
+
+    # 6c. Tableau croisé Faculté × Usage IA
+    if "faculte" in df.columns and "utilise_ia" in df.columns:
+        ct = pd.crosstab(df["faculte"], df["utilise_ia"])
+        stats_dict["crosstab_faculte_usage"] = {
+            "index": ct.index.tolist(),
+            "columns": ct.columns.tolist(),
+            "data": ct.values.tolist(),
+        }
+    else:
+        stats_dict["crosstab_faculte_usage"] = {"index": [], "columns": [], "data": []}
+
     # 7. H1 : Corrélation usage ↔ perception (avec P-value)
     if total >= 2:
         df["freq_score"] = df["frequence_ia_etudes"].apply(_freq_score)
