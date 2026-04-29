@@ -1,3 +1,16 @@
+---
+title: Mon Projet FastAPI
+emoji: 🚀
+colorFrom: blue
+colorTo: green
+sdk: docker
+pinned: false
+---
+
+# TP-INF-232
+
+Ceci est mon backend FastAPI déployé sur Hugging Face Spaces.
+
 # Enquête IA & PassExamAI — Documentation
 
 ## Structure du projet
@@ -5,16 +18,17 @@
 ```
 survey-app/
 ├── backend/
-│   ├── __init__.py
-│   ├── database.py     # SQLite + SQLAlchemy setup
-│   ├── models.py       # Modèle Response (ORM)
-│   ├── schemas.py      # Validation Pydantic
-│   ├── analysis.py     # Stats pandas — H1, H2, H3
-│   └── main.py         # FastAPI app + routes
+│   ├── app/
+│   │   ├── database.py     # SQLite + SQLAlchemy setup
+│   │   ├── models.py       # Modèle Response (ORM)
+│   │   ├── schemas.py      # Validation Pydantic
+│   │   ├── analysis.py     # Stats pandas — H1, H2, H3
+│   │   └── main.py         # FastAPI app + routes
+│   ├── pyproject.toml      # Dépendances (uv)
+│   └── uv.lock             # Lockfile (uv)
 ├── frontend/
-│   ├── index.html      # Formulaire (23 questions, 4 sections)
-│   └── dashboard.html  # Dashboard admin (Chart.js)
-├── requirements.txt
+│   ├── index.html          # Formulaire (23 questions, 4 sections)
+│   └── dashboard.html      # Dashboard admin (Chart.js)
 └── README.md
 ```
 
@@ -22,15 +36,13 @@ survey-app/
 
 ```bash
 # 1. Cloner / se placer dans le dossier
-cd survey-app
+cd survey-app/backend
 
-# 2. Créer un environnement virtuel (recommandé)
-python -m venv .venv
-source .venv/bin/activate        # Linux/Mac
-# ou .venv\Scripts\activate      # Windows
+# 2. Installer uv (si pas déjà fait)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# 3. Installer les dépendances
-pip install -r requirements.txt
+# 3. Installer les dépendances et créer le venv
+uv sync
 ```
 
 ## Lancement
@@ -39,8 +51,8 @@ pip install -r requirements.txt
 # Se placer dans le dossier backend
 cd backend
 
-# Lancer le serveur
-uvicorn app.main:app --reload
+# Lancer le serveur avec uv
+uv run uvicorn app.main:app --reload
 ```
 
 - **Formulaire** → http://localhost:8000/
@@ -59,14 +71,14 @@ passexam-admin-2024
 
 ## API Endpoints
 
-| Méthode | Route | Auth | Description |
-|---------|-------|------|-------------|
-| GET | `/` | Non | Formulaire |
-| GET | `/dashboard` | Non | Dashboard (login requis) |
-| POST | `/api/submit` | Non | Soumettre une réponse |
-| GET | `/api/analysis` | Token | Stats complètes (JSON) |
-| GET | `/api/responses` | Token | Toutes les réponses brutes |
-| GET | `/api/health` | Non | Vérification serveur |
+| Méthode | Route            | Auth  | Description                |
+| ------- | ---------------- | ----- | -------------------------- |
+| GET     | `/`              | Non   | Formulaire                 |
+| GET     | `/dashboard`     | Non   | Dashboard (login requis)   |
+| POST    | `/api/submit`    | Non   | Soumettre une réponse      |
+| GET     | `/api/analysis`  | Token | Stats complètes (JSON)     |
+| GET     | `/api/responses` | Token | Toutes les réponses brutes |
+| GET     | `/api/health`    | Non   | Vérification serveur       |
 
 ## Hypothèses testées
 
@@ -74,10 +86,16 @@ passexam-admin-2024
 - **H2** — % d'étudiants sans méthode structurée de préparation
 - **H3** — Taux d'adoption de PassExamAI (test > 60%)
 
-## Déploiement (Render)
+## Déploiement
 
-1. Push sur GitHub
-2. Créer un Web Service sur Render
-3. Build command : `pip install -r requirements.txt`
-4. Start command : `cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-5. Ajouter variable d'env `ADMIN_TOKEN` dans le dashboard Render
+### Backend (Hugging Face Spaces)
+Le backend est déployé dans un container Docker sur Hugging Face.
+1. Le projet utilise un `Dockerfile` qui installe `uv` pour une gestion optimale des dépendances.
+2. Déploiement automatique via GitHub Actions (voir `.github/workflows/deploy.yml`).
+3. Variables d'environnement nécessaires : `ADMIN_TOKEN`.
+
+### Frontend (Vercel)
+Le frontend est hébergé sur Vercel pour une performance maximale.
+1. Connecter le repo GitHub à Vercel.
+2. Configurer le répertoire racine sur `frontend/`.
+3. S'assurer que les appels API pointent vers l'URL Hugging Face.
