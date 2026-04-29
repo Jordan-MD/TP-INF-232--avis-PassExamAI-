@@ -11,4 +11,6 @@ RUN uv pip install --system --no-cache -r /code/pyproject.toml
 
 COPY . /code
 
+EXPOSE 7860
+
 CMD ["uvicorn", "app.app:app", "--host", "0.0.0.0", "--port", "7860"]

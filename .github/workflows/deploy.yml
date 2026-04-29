@@ -32,4 +32,4 @@ jobs:
           git add .
           git commit -m "Deploy: $(date +'%Y-%m-%d %H:%M')"
           git push --force \
-            https://JordanMD001237:${HF_TOKEN}@huggingface.co/spaces/JordanMD001237/TP-INF-232 main
+            https://Jordan001237:${HF_TOKEN}@huggingface.co/spaces/Jordan001237/TP-INF-232 main
